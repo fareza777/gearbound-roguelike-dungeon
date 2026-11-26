@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#2A1F14" />
+  <title>Gearbound — Clockwork Roguelike Dungeon</title>
+  <link rel="stylesheet" href="./fonts/fonts.css" />
+</head>
+<body>
+  <div id="app-shell">
+    <!-- Dual Sequential Splash Overlay -->
+    <div id="splash-overlay" class="splash-overlay active">
+      <div id="splash-game" class="splash-stage active">
+        <img src="./assets/ui/splash_game_portrait.png" alt="Gearbound" class="splash-art" />
+        <div class="splash-vignette"></div>
+        <div class="splash-tap-hint">TAP TO CONTINUE</div>
+      </div>
+      <div id="splash-f7" class="splash-stage">
+        <video id="f7-splash-video" class="splash-video" playsinline muted preload="auto" poster="./assets/brand/f7_splash_final.png">
+          <source src="./assets/brand/f7_splash_portrait.mp4" type="video/mp4" />
+          <source src="./assets/brand/f7_splash_portrait.webm" type="video/webm" />
+        </video>
+        <img id="f7-splash-fallback" src="./assets/brand/f7_splash_final.png" alt="F7 Developer" class="splash-art hidden" />
+      </div>
+    </div>
+
+    <!-- Main Portrait Viewport -->
+    <div id="game-viewport">
+      <!-- Top HUD Strip (Contextual per screen) -->
+      <header id="top-hud" class="hidden"></header>
+
+      <!-- Main Screen Container -->
+      <main id="screen-root"></main>
+
+      <!-- Safe-Area Compliant Banner Ad Dock (Hidden on Splash, Hidden when Remove Ads owned, Never overlaps controls) -->
+      <div id="ad-banner-dock" class="ad-banner-dock hidden">
+        <div class="ad-banner-placeholder">
+          <span class="ad-badge">AD</span>
+          <span class="ad-copy">Google AdMob Test Banner • Safe Area Dock</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bespoke Modal Layer -->
+    <div id="modal-root" class="modal-root hidden"></div>
+
+    <!-- Floating Toast Layer -->
+    <div id="toast-root" class="toast-root"></div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

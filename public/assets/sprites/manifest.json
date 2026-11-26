@@ -1,0 +1,302 @@
+{
+  "hero_ironclad": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/hero_ironclad_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/hero_ironclad_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/hero_ironclad_hit.png",
+        "frames": 8
+      },
+      "guard": {
+        "file": "./assets/sprites/hero_ironclad_guard.png",
+        "frames": 10
+      }
+    }
+  },
+  "hero_arbalest": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/hero_arbalest_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/hero_arbalest_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/hero_arbalest_hit.png",
+        "frames": 8
+      },
+      "guard": {
+        "file": "./assets/sprites/hero_arbalest_guard.png",
+        "frames": 10
+      }
+    }
+  },
+  "hero_artificer": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/hero_artificer_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/hero_artificer_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/hero_artificer_hit.png",
+        "frames": 8
+      },
+      "guard": {
+        "file": "./assets/sprites/hero_artificer_guard.png",
+        "frames": 10
+      }
+    }
+  },
+  "enemy_pikeman": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_pikeman_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_pikeman_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_pikeman_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "enemy_arbalest": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_arbalest_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_arbalest_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_arbalest_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "enemy_automaton": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_automaton_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_automaton_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_automaton_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "enemy_bulwark": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_bulwark_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_bulwark_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_bulwark_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "enemy_hammer_golem": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_hammer_golem_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_hammer_golem_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_hammer_golem_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "enemy_ballista": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_ballista_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_ballista_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_ballista_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "enemy_lancer": {
+    "frameWidth": 280,
+    "frameHeight": 230,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/enemy_lancer_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/enemy_lancer_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/enemy_lancer_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "boss_colossus": {
+    "frameWidth": 340,
+    "frameHeight": 280,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/boss_colossus_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/boss_colossus_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/boss_colossus_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "boss_juggernaut": {
+    "frameWidth": 340,
+    "frameHeight": 280,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/boss_juggernaut_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/boss_juggernaut_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/boss_juggernaut_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "boss_furnace": {
+    "frameWidth": 340,
+    "frameHeight": 280,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/boss_furnace_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/boss_furnace_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/boss_furnace_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "boss_glacier": {
+    "frameWidth": 340,
+    "frameHeight": 280,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/boss_glacier_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/boss_glacier_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/boss_glacier_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "boss_arbiter": {
+    "frameWidth": 340,
+    "frameHeight": 280,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/boss_arbiter_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/boss_arbiter_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/boss_arbiter_hit.png",
+        "frames": 8
+      }
+    }
+  },
+  "boss_sovereign": {
+    "frameWidth": 340,
+    "frameHeight": 280,
+    "anims": {
+      "idle": {
+        "file": "./assets/sprites/boss_sovereign_idle.png",
+        "frames": 12
+      },
+      "attack": {
+        "file": "./assets/sprites/boss_sovereign_attack.png",
+        "frames": 12
+      },
+      "hit": {
+        "file": "./assets/sprites/boss_sovereign_hit.png",
+        "frames": 8
+      }
+    }
+  }
+}

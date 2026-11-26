@@ -1,0 +1,29 @@
+# Dependencies & Build Outputs
+node_modules/
+dist/
+.vite/
+
+# Android Build & Local Environment
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+*.apk
+*.aab
+!release-artifacts/.gitkeep
+
+# Release Signing Secrets (NEVER commit keystores or passwords)
+*.jks
+*.keystore
+key.properties
+keystore.properties
+google-services.json
+
+# OS & Editor Artifacts
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+public/assets/raw/
