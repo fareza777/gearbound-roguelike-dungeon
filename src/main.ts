@@ -901,7 +901,9 @@ class GearboundApp {
     run.pullsInRun += 1;
     saveManager.data.stats.totalPulls += 1;
 
+    d.arena.setWheelSpinning(true);
     await d.console.spinTo(nextGrid, run.deck, d.lockedCols, hasAnticipation);
+    d.arena.setWheelSpinning(false);
     d.currentGrid = nextGrid;
     // Release column locks after the pull resolves
     d.lockedCols = [false, false, false];

@@ -10,9 +10,11 @@
 class MechanicalSfxEngine {
   private ctx: AudioContext | null = null;
   private noiseBuf: AudioBuffer | null = null;
+  private shortNoiseBuf: AudioBuffer | null = null;
   private sfxEnabled = true;
   private ambienceEnabled = true;
   private ambienceNodes: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
+  private lastRatchetAt = 0;
 
   configure(sfxEnabled: boolean, ambienceEnabled: boolean): void {
     this.sfxEnabled = sfxEnabled;
@@ -29,7 +31,8 @@ class MechanicalSfxEngine {
       const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AC) return;
       this.ctx = new AC();
-      this.noiseBuf = this.buildNoiseBuffer(this.ctx, 2.5);
+      this.noiseBuf = this.buildNoiseBuffer(this.ctx, 1.5);
+      this.shortNoiseBuf = this.buildNoiseBuffer(this.ctx, 0.08);
     }
     if (this.ctx.state === 'suspended') {
       this.ctx.resume().catch(() => {});
@@ -158,9 +161,29 @@ class MechanicalSfxEngine {
     this.playFilteredNoise(0.24, 3400, 0.9, 'highpass', 0.10, 0.07, 1500);
   }
 
-  /** Crisp clockwork ratchet detent tick while drums spin */
+  /** Crisp clockwork ratchet detent tick while drums spin (throttled >=70ms for zero audio-thread lag!) */
   playRatchetTick(intensity = 1.0): void {
-    this.playFilteredNoise(0.018, 2600 + Math.random() * 500, 3.4, 'bandpass', 0.11 * intensity);
+    if (!this.sfxEnabled) return;
+    const nowMs = performance.now();
+    if (nowMs - this.lastRatchetAt < 70) return;
+    this.lastRatchetAt = nowMs;
+    this.unlock();
+    if (!this.ctx || !this.shortNoiseBuf) return;
+    const now = this.ctx.currentTime;
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.shortNoiseBuf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 2600 + Math.random() * 450;
+    filter.Q.value = 3.2;
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.11 * intensity, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    src.start(now);
+    src.stop(now + 0.024);
   }
 
   /** Heavy iron mechanical drum lock-in thud */
