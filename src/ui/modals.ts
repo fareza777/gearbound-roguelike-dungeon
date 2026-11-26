@@ -616,6 +616,15 @@ export function openOnboardingModal(ctx: ModalContext, step = 0): void {
       closeModal();
       ctx.onStateChanged();
     };
+    // Ensure closing via X or backdrop ALSO permanently marks onboarding completed so it never nags!
+    sheet.querySelector('[data-close-modal]')?.addEventListener('click', finish);
+    const root = getModalRoot();
+    root.onclick = (e) => {
+      if (e.target === root) {
+        sfx.playTap();
+        finish();
+      }
+    };
     sheet.querySelector('[data-onb-skip]')?.addEventListener('click', () => {
       sfx.playTap();
       finish();

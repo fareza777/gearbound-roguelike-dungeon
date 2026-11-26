@@ -214,18 +214,33 @@ class GearboundApp {
     });
   }
 
+  private toastTimer = 0;
+
   showToast(msg: string): void {
     const root = document.getElementById('toast-root');
     if (!root) return;
+    if (this.toastTimer) {
+      window.clearTimeout(this.toastTimer);
+      this.toastTimer = 0;
+    }
+    root.innerHTML = '';
     const item = document.createElement('div');
     item.className = 'toast-item';
     item.textContent = msg;
+    const dismiss = () => {
+      if (this.toastTimer) {
+        window.clearTimeout(this.toastTimer);
+        this.toastTimer = 0;
+      }
+      item.remove();
+    };
+    item.addEventListener('click', dismiss);
     root.appendChild(item);
-    setTimeout(() => {
+    this.toastTimer = window.setTimeout(() => {
       item.style.opacity = '0';
-      item.style.transition = 'opacity 0.25s ease';
-      setTimeout(() => item.remove(), 260);
-    }, 2400);
+      item.style.transition = 'opacity 0.22s ease';
+      this.toastTimer = window.setTimeout(dismiss, 240);
+    }, 1850);
   }
 
   private onGlobalStateChanged(): void {
@@ -410,7 +425,7 @@ class GearboundApp {
             DAILY
           </button>
           <button class="hub-tile-btn" data-open-patrol>
-            ${patrol.ingots > 0 ? `<span class="badge-dot">+${patrol.ingots}</span>` : ''}
+            ${patrol.ingots >= 10 ? `<span class="badge-dot">+${patrol.ingots}</span>` : ''}
             <img src="./assets/symbols/clock_pendulum.png" class="hub-tile-icon" alt="" />
             PATROL
           </button>
@@ -431,23 +446,30 @@ class GearboundApp {
       </div>
     `;
 
-    // Animate live idle hero preview sprite on hub canvas
+    // Animate live idle hero preview sprite on hub canvas (compact 4x3 atlas, gentle 15fps!)
     void assetCache.preloadUnit(cls.spriteId).then(() => {
       const cv = document.getElementById('hub-hero-canvas') as HTMLCanvasElement | null;
       if (!cv) return;
       const ctx = cv.getContext('2d');
       if (!ctx) return;
-      let start = performance.now();
+      const start = performance.now();
+      let lastDraw = 0;
       const tick = (now: number) => {
         if (this.screen !== 'hub') return;
-        const meta = assetCache.manifest[cls.spriteId];
-        const idle = meta?.anims.idle;
-        const sheet = idle ? assetCache.getImage(idle.file) : null;
-        ctx.clearRect(0, 0, cv.width, cv.height);
-        if (meta && idle && sheet) {
-          const idx = Math.floor(((now - start) / 1000) * 11) % idle.frames;
-          const dw = (meta.frameWidth / meta.frameHeight) * 172;
-          ctx.drawImage(sheet, idx * meta.frameWidth, 0, meta.frameWidth, meta.frameHeight, (cv.width - dw) * 0.5, 16, dw, 172);
+        if (now - lastDraw >= 66) {
+          lastDraw = now;
+          const meta = assetCache.manifest[cls.spriteId];
+          const idle = meta?.anims.idle;
+          const sheet = idle ? assetCache.getImage(idle.file) : null;
+          ctx.clearRect(0, 0, cv.width, cv.height);
+          if (meta && idle && sheet) {
+            const idx = Math.floor(((now - start) / 1000) * 10) % idle.frames;
+            const cols = idle.cols ?? idle.frames;
+            const sx = (idx % cols) * meta.frameWidth;
+            const sy = Math.floor(idx / cols) * meta.frameHeight;
+            const dw = (meta.frameWidth / meta.frameHeight) * 168;
+            ctx.drawImage(sheet, sx, sy, meta.frameWidth, meta.frameHeight, (cv.width - dw) * 0.5, 16, dw, 168);
+          }
         }
         this.hubHeroRaf = requestAnimationFrame(tick);
       };

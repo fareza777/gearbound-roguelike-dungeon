@@ -42,8 +42,11 @@ export class ConsoleRenderer {
   private dpr = 1;
   private rafId = 0;
   private lastTs = 0;
+  private idleFrameAccum = 0;
   private destroyed = false;
   private speedMult: 1 | 2 = 1;
+  private cylShadeGrad: CanvasGradient | null = null;
+  private drumBgGrad: CanvasGradient | null = null;
 
   private reels: [ReelState, ReelState, ReelState];
   private lockedCols: [boolean, boolean, boolean] = [false, false, false];
@@ -199,7 +202,7 @@ export class ConsoleRenderer {
     const rect = this.canvas.getBoundingClientRect();
     this.w = Math.max(280, rect.width || 390);
     this.h = Math.max(220, rect.height || 300);
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     this.canvas.width = Math.round(this.w * this.dpr);
     this.canvas.height = Math.round(this.h * this.dpr);
 
@@ -250,6 +253,24 @@ export class ConsoleRenderer {
       w: leverW,
       h: hh * 0.84
     };
+
+    // Pre-allocate drum gradients ONCE on resize instead of 6x every animation frame!
+    const bgG = this.ctx.createLinearGradient(0, vy, 0, vy + vh);
+    bgG.addColorStop(0.0, '#1D150E');
+    bgG.addColorStop(0.18, '#3B2D1E');
+    bgG.addColorStop(0.50, '#54422C');
+    bgG.addColorStop(0.82, '#3B2D1E');
+    bgG.addColorStop(1.0, '#1D150E');
+    this.drumBgGrad = bgG;
+
+    const cylG = this.ctx.createLinearGradient(0, vy, 0, vy + vh);
+    cylG.addColorStop(0.0, 'rgba(6, 4, 2, 0.68)');
+    cylG.addColorStop(0.16, 'rgba(6, 4, 2, 0.16)');
+    cylG.addColorStop(0.45, 'rgba(255, 244, 206, 0.07)');
+    cylG.addColorStop(0.55, 'rgba(255, 244, 206, 0.0)');
+    cylG.addColorStop(0.84, 'rgba(6, 4, 2, 0.18)');
+    cylG.addColorStop(1.0, 'rgba(6, 4, 2, 0.72)');
+    this.cylShadeGrad = cylG;
   }
 
   destroy(): void {
@@ -372,7 +393,24 @@ export class ConsoleRenderer {
     const dt = Math.min(0.05, (ts - this.lastTs) / 1000);
     this.lastTs = ts;
     this.step(dt);
-    this.render();
+
+    // Run full 60 FPS during active spin, lever drag, highlights, or sparks;
+    // gently throttle idle clockwork hum to 20 FPS so Android GPU stays cool & snappy!
+    const isActive =
+      this.busy ||
+      this.leverDragging ||
+      Math.abs(this.leverProgress) > 0.005 ||
+      this.activeLines.length > 0 ||
+      this.sparks.length > 0;
+    if (isActive) {
+      this.render();
+    } else {
+      this.idleFrameAccum += dt;
+      if (this.idleFrameAccum >= 0.05) {
+        this.idleFrameAccum = 0;
+        this.render();
+      }
+    }
     this.rafId = requestAnimationFrame(this.loop);
   };
 
@@ -512,20 +550,23 @@ export class ConsoleRenderer {
           const cr = this.colRects[c];
           return { x: cr.x + cr.w * 0.5, y: cr.y + (r + 0.5) * (cr.h / 3) };
         });
+        // Fast GPU-native multi-stroke glow (ZERO shadowBlur CPU readback!)
         ctx.save();
-        ctx.strokeStyle = `rgba(255, 214, 92, ${0.42 + pulse * 0.48})`;
-        ctx.lineWidth = 7;
         ctx.lineCap = 'round';
-        ctx.shadowColor = '#FFD452';
-        ctx.shadowBlur = 14;
+        ctx.strokeStyle = `rgba(255, 200, 62, ${0.22 + pulse * 0.20})`;
+        ctx.lineWidth = 14;
         ctx.beginPath();
         ctx.moveTo(pts[0].x, pts[0].y);
         ctx.lineTo(pts[1].x, pts[1].y);
         ctx.lineTo(pts[2].x, pts[2].y);
         ctx.stroke();
 
-        ctx.strokeStyle = '#FFF7D4';
-        ctx.lineWidth = 2.6;
+        ctx.strokeStyle = `rgba(255, 224, 108, ${0.65 + pulse * 0.35})`;
+        ctx.lineWidth = 6.5;
+        ctx.stroke();
+
+        ctx.strokeStyle = '#FFF9DF';
+        ctx.lineWidth = 2.4;
         ctx.stroke();
 
         // Glowing brass nodes at each matched tile center
@@ -573,14 +614,8 @@ export class ConsoleRenderer {
     ctx.rect(rect.x, rect.y, rect.w, rect.h);
     ctx.clip();
 
-    // Curved parchment-brass mechanical drum backing cylinder
-    const bgGrad = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.h);
-    bgGrad.addColorStop(0.0, '#1D150E');
-    bgGrad.addColorStop(0.18, '#3B2D1E');
-    bgGrad.addColorStop(0.50, '#54422C');
-    bgGrad.addColorStop(0.82, '#3B2D1E');
-    bgGrad.addColorStop(1.0, '#1D150E');
-    ctx.fillStyle = bgGrad;
+    // Cached curved parchment-brass mechanical drum backing cylinder
+    ctx.fillStyle = this.drumBgGrad ?? '#3B2D1E';
     ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 
     // Subtle mechanical drum seam rings between rows
@@ -660,16 +695,11 @@ export class ConsoleRenderer {
       }
     }
 
-    // 3D Cylindrical Curvature Lighting Overlay (deep top/bottom shadow + central specular band!)
-    const cylGrad = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.h);
-    cylGrad.addColorStop(0.0, 'rgba(6, 4, 2, 0.68)');
-    cylGrad.addColorStop(0.16, 'rgba(6, 4, 2, 0.16)');
-    cylGrad.addColorStop(0.45, 'rgba(255, 244, 206, 0.07)');
-    cylGrad.addColorStop(0.55, 'rgba(255, 244, 206, 0.0)');
-    cylGrad.addColorStop(0.84, 'rgba(6, 4, 2, 0.18)');
-    cylGrad.addColorStop(1.0, 'rgba(6, 4, 2, 0.72)');
-    ctx.fillStyle = cylGrad;
-    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+    // Cached 3D Cylindrical Curvature Lighting Overlay
+    if (this.cylShadeGrad) {
+      ctx.fillStyle = this.cylShadeGrad;
+      ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+    }
 
     // Locked column golden brass clamp glow
     if (this.lockedCols[c]) {

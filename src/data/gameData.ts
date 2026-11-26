@@ -584,7 +584,7 @@ export const BIOMES: BiomeDef[] = [
   {
     index: 0, actNumeral: 'ACT I', name: 'Sunlit Sandstone Ruins', subtitle: 'Outer Viaduct Courtyard',
     bgFile: './assets/biomes/biome_1.png', ambientKind: 'sunbeams', accentHex: '#C99432',
-    roomsCount: 8, enemyPool: ['enemy_pikeman', 'enemy_arbalest'], elitePool: ['enemy_bulwark'], bossId: 'boss_colossus',
+    roomsCount: 8, enemyPool: ['enemy_arbalest', 'enemy_automaton', 'enemy_pikeman'], elitePool: ['enemy_bulwark'], bossId: 'boss_colossus',
     narrative: 'Golden morning light pours through weathered limestone arches where ancient clockwork sentinels still hold the expedition gates.'
   },
   {

@@ -89,6 +89,10 @@ export class ArenaRenderer {
   private lastTs = 0;
   private speedMult = 1;
   private destroyed = false;
+  private bgCache: HTMLCanvasElement | null = null;
+  private bgCacheBiome = -1;
+  private bgCacheW = 0;
+  private bgCacheH = 0;
 
   constructor(canvas: HTMLCanvasElement, initial: ArenaSnapshot) {
     this.canvas = canvas;
@@ -114,9 +118,10 @@ export class ArenaRenderer {
     const rect = this.canvas.getBoundingClientRect();
     this.w = Math.max(240, rect.width || 380);
     this.h = Math.max(160, rect.height || 230);
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     this.canvas.width = Math.round(this.w * this.dpr);
     this.canvas.height = Math.round(this.h * this.dpr);
+    this.bgCacheBiome = -1; // invalidate cached backdrop
   }
 
   destroy(): void {
@@ -126,7 +131,7 @@ export class ArenaRenderer {
 
   private initAmbients(): void {
     this.ambients = [];
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 12; i++) {
       this.ambients.push({
         x: Math.random(),
         y: Math.random() * 0.85,
@@ -295,6 +300,9 @@ export class ArenaRenderer {
     this.lastTs = ts;
     const dt = rawDt * (this.speedMult === 2 ? 1.45 : 1.0);
 
+    if (this.bannerFlash > 0) {
+      this.bannerFlash = Math.max(0, this.bannerFlash - rawDt);
+    }
     if (this.hitStopTime > 0) {
       this.hitStopTime -= rawDt;
     } else {
@@ -402,12 +410,15 @@ export class ArenaRenderer {
         : Math.min(animMeta.frames - 1, Math.floor(animTime * fps));
     const fw = meta.frameWidth;
     const fh = meta.frameHeight;
+    const cols = animMeta.cols ?? animMeta.frames;
+    const sx = (idx % cols) * fw;
+    const sy = Math.floor(idx / cols) * fh;
     const drawW = (fw / fh) * drawHeight;
 
     this.ctx.drawImage(
       sheet,
-      idx * fw,
-      0,
+      sx,
+      sy,
       fw,
       fh,
       cx - drawW * 0.5,
@@ -518,14 +529,28 @@ export class ArenaRenderer {
     const sy = this.shakeTime > 0 ? (Math.random() - 0.5) * 2 * this.shakeMag * (this.shakeTime * 3.5) : 0;
     ctx.translate(sx, sy);
 
-    // 1. Biome Backdrop (cover fit)
+    // 1. Pre-scaled Offscreen Cached Biome Backdrop (Single fast GPU blit per frame!)
     const biome = BIOMES[this.state.biomeIndex] ?? BIOMES[0];
     const bg = assetCache.getImage(biome.bgFile);
     if (bg) {
-      const scale = Math.max(this.w / bg.width, this.h / bg.height);
-      const dw = bg.width * scale;
-      const dh = bg.height * scale;
-      ctx.drawImage(bg, (this.w - dw) * 0.5, (this.h - dh) * 0.5, dw, dh);
+      const cw = Math.round(this.w * this.dpr);
+      const ch = Math.round(this.h * this.dpr);
+      if (!this.bgCache || this.bgCacheBiome !== this.state.biomeIndex || this.bgCacheW !== cw || this.bgCacheH !== ch) {
+        this.bgCache = document.createElement('canvas');
+        this.bgCache.width = cw;
+        this.bgCache.height = ch;
+        const bctx = this.bgCache.getContext('2d');
+        if (bctx) {
+          const scale = Math.max(cw / bg.width, ch / bg.height);
+          const dw = bg.width * scale;
+          const dh = bg.height * scale;
+          bctx.drawImage(bg, (cw - dw) * 0.5, (ch - dh) * 0.5, dw, dh);
+        }
+        this.bgCacheBiome = this.state.biomeIndex;
+        this.bgCacheW = cw;
+        this.bgCacheH = ch;
+      }
+      ctx.drawImage(this.bgCache, 0, 0, this.w, this.h);
     } else {
       ctx.fillStyle = '#3A2E20';
       ctx.fillRect(0, 0, this.w, this.h);

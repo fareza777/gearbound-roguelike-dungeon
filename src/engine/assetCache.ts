@@ -1,6 +1,8 @@
 export interface SpriteAnimMeta {
   file: string;
   frames: number;
+  cols?: number;
+  rows?: number;
 }
 
 export interface SpriteUnitMeta {
