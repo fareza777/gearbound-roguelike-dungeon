@@ -594,17 +594,17 @@ html[data-theme='dark'] .title-engraved {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 8px 0;
+  margin: 5px 0;
   position: relative;
   z-index: 2;
 }
 
 .map-node-btn {
-  width: 66px;
-  padding: 6px 4px;
-  border-radius: 12px;
+  width: 62px;
+  padding: 5px 4px;
+  border-radius: 11px;
   border: 2px solid var(--brass-border);
-  background: var(--surface-tint);
+  background: var(--bg-page);
   color: var(--ink-primary);
   font-family: var(--font-ui);
   font-size: 9px;
@@ -612,8 +612,9 @@ html[data-theme='dark'] .title-engraved {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   cursor: pointer;
+  box-shadow: 0 3px 8px rgba(20, 12, 4, 0.20);
   transition: transform 0.14s ease, box-shadow 0.14s ease;
 }
 
@@ -621,18 +622,32 @@ html[data-theme='dark'] .title-engraved {
   border-color: #E8B844;
   background: linear-gradient(180deg, #FFF1C2, #E6BE68);
   color: #2A1605;
-  box-shadow: 0 0 14px rgba(235, 178, 52, 0.65);
+  box-shadow: 0 0 16px rgba(235, 178, 52, 0.78);
   animation: nodePulse 1.5s infinite ease-in-out;
 }
 
 .map-node-btn.cleared {
-  opacity: 0.56;
-  background: var(--surface-recess);
+  background: #D9CCA8;
+  color: #5E4B32;
+  border-color: #9A7D4A;
 }
 
 .map-node-btn.locked {
-  opacity: 0.42;
+  background: #E6DAC0;
+  color: #7D6A4E;
+  border-color: #B49C72;
   pointer-events: none;
+}
+
+html[data-theme='dark'] .map-node-btn.locked {
+  background: #221D18;
+  color: #887A65;
+  border-color: #5C4B32;
+}
+
+html[data-theme='dark'] .map-node-btn.cleared {
+  background: #2C241B;
+  color: #A69374;
 }
 
 .map-node-btn.boss-node {
@@ -686,7 +701,7 @@ html[data-theme='dark'] .title-engraved {
 
 .tier-pill {
   display: inline-block;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 6px;
   background: #23170D;
   border: 1px solid #D9A744;
@@ -694,6 +709,8 @@ html[data-theme='dark'] .title-engraved {
   font-size: 9px;
   font-weight: 800;
   color: #FCE29C;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .merge-ready-pill {
@@ -709,7 +726,7 @@ html[data-theme='dark'] .title-engraved {
 
 /* ---------------- SAFE-AREA COMPLIANT BANNER AD DOCK ---------------- */
 .ad-banner-dock {
-  flex: 0 0 54px;
+  flex: 0 0 62px;
   width: 100%;
   background: var(--dock-bg);
   border-top: 2px solid var(--brass-border);
@@ -718,6 +735,10 @@ html[data-theme='dark'] .title-engraved {
   justify-content: center;
   padding: 4px 8px;
   z-index: 30;
+}
+
+.native-android .ad-banner-placeholder {
+  display: none;
 }
 
 .ad-banner-placeholder {

@@ -761,27 +761,34 @@ export class ArenaRenderer {
       }
     }
 
-    ctx.font = '700 10px "Cinzel", serif';
+    ctx.font = '700 8.8px "Cinzel", serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = this.state.enemyStunned ? '#FFF0A8' : '#FFE3C4';
-    ctx.fillText(copy.slice(0, 26), x + w * 0.5, y + 12.5);
+    ctx.fillText(copy.slice(0, 24), x + w * 0.5, y + 12.5);
 
-    // Stagger & Heat sub-pills
+    // Stagger & Heat sub-pills with crisp dark forged outline
     let tagX = x + w;
     if (this.state.enemyStagger > 0 && !this.state.enemyStunned) {
       const st = `STAGGER ${Math.min(100, this.state.enemyStagger)}%`;
-      ctx.font = '700 9px "Cinzel", serif';
+      ctx.font = '800 9px "Cinzel", serif';
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#FFE285';
+      ctx.strokeStyle = 'rgba(18, 10, 4, 0.94)';
+      ctx.lineWidth = 3.2;
+      ctx.strokeText(st, tagX, y + 35);
+      ctx.fillStyle = '#FFE98A';
       ctx.fillText(st, tagX, y + 35);
       tagX -= 84;
     }
     if (this.state.enemyHeat > 0) {
-      ctx.font = '700 9px "Cinzel", serif';
+      const ht = `HEAT ${this.state.enemyHeat}`;
+      ctx.font = '800 9px "Cinzel", serif';
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#FF9F5A';
-      ctx.fillText(`HEAT ${this.state.enemyHeat}`, tagX, y + 35);
+      ctx.strokeStyle = 'rgba(18, 10, 4, 0.94)';
+      ctx.lineWidth = 3.2;
+      ctx.strokeText(ht, tagX, y + 35);
+      ctx.fillStyle = '#FFA45E';
+      ctx.fillText(ht, tagX, y + 35);
     }
     ctx.restore();
   }

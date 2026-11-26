@@ -27,9 +27,12 @@ class NativeBridge {
 
   async init(theme: 'light' | 'dark', removeAdsOwned: boolean): Promise<void> {
     if (this.isNative) {
+      document.documentElement.classList.add('native-android');
       try {
         await StatusBar.setOverlaysWebView({ overlay: false });
-        await this.applyStatusBarTheme(theme);
+        // Dark cinematic status bar while Dual Splash Screens play
+        await StatusBar.setStyle({ style: Style.Dark });
+        await StatusBar.setBackgroundColor({ color: '#0E0A08' });
       } catch {
         // Ignore on unsupported devices
       }

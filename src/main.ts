@@ -133,6 +133,7 @@ class GearboundApp {
     await this.runDualSplashScreens();
     await preloadTask;
 
+    await nativeBridge.applyStatusBarTheme(s.theme);
     await nativeBridge.showBanner(saveManager.data.removeAdsOwned);
     this.goTo('hub');
 
@@ -615,6 +616,11 @@ class GearboundApp {
         }
       }
       svg.innerHTML = lines.join('');
+      // Auto-scroll expedition map cleanly to currently selectable row (so Row 0 is immediately visible!)
+      const firstSel = stage.querySelector('.map-node-btn.selectable') as HTMLElement | null;
+      if (firstSel) {
+        firstSel.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+      }
     });
 
     root.querySelectorAll('[data-map-node]').forEach((btn) => {
